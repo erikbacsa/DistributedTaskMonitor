@@ -1,0 +1,68 @@
+services:
+  # The FastAPI Backend
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://user:pass@db:5432/task_monitor
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+# The Background Muscle
+  worker:
+    build: .
+    command: celery -A app.worker.celery_app worker --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      # FIX: Match the credentials used in the 'db' service below
+      - DATABASE_URL=postgresql://user:pass@db:5432/task_monitor
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+      - db
+
+  # The Persistent Database
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=task_monitor
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # The Task Queue (Redis)
+  redis:
+    image: redis:7-alpine
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - web
+
+  dashboard:
+    build: .
+    command: celery -A app.worker.celery_app flower --port=5555
+    ports:
+      - "5555:5555"
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+      - worker
+
+volumes:
+  postgres_data:
