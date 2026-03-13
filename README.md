@@ -1,28 +1,30 @@
-# 🚀 Distributed Task Monitor
+# Distributed Task Monitor
 
-A production-grade distributed system designed to handle asynchronous tasks. This project showcases a modern full-stack architecture using **FastAPI** for the API layer and **Celery** for background processing.
+A high-performance, full-stack distributed system designed to handle asynchronous background processing. This project demonstrates a production-ready architecture using **FastAPI**, **Next.js**, and **Celery** to manage long-running tasks without blocking the main application thread.
 
-## 🛠 Features
-- **Real-time Dashboard**: Built with Next.js and Tailwind CSS for a sleek, dark-mode experience.
-- **Background Workers**: Tasks are offloaded to Celery workers via Redis to keep the API responsive.
-- **Bulk Operations**: "Bulk Injector" feature to stress-test worker concurrency.
-- **Full Monitoring**: Health checks via Flower and persistent storage via PostgreSQL.
+## The Stack
+- **Backend:** FastAPI (Python 3.11)
+- **Frontend:** Next.js 14+ (TypeScript, Tailwind CSS)
+- **Task Queue:** Celery + Redis
+- **Database:** PostgreSQL 15
+- **Infrastructure:** Docker & Docker Compose
+- **Monitoring:** Flower (Celery Monitoring Tool)
 
-## 🏗 System Architecture
-The system follows a standard distributed pattern:
-1. **Frontend** (Next.js) sends a POST request to the **API**.
-2. **API** (FastAPI) saves the task metadata to **PostgreSQL**.
-3. **API** pushes the Task ID to the **Redis** message broker.
-4. **Worker** (Celery) picks up the task and simulates work, updating the DB progress.
-5. **Frontend** polls the API every 2 seconds to reflect the live status.
+## Key Features
+- **Asynchronous Task Execution:** Offloads heavy processing to background workers.
+- **Bulk Injector:** Trigger multiple concurrent tasks with a single click to test system throughput.
+- **Real-time Progress Tracking:** Live feedback loop showing task percentage and status.
+- **Microservices Orchestration:** Fully containerized environment with dedicated networks for DB, Cache, and API.
 
-## 🚦 Getting Started
+## 🏁 Installation & Running
 
-### Prerequisites
-- Docker & Docker Compose installed.
+Follow these steps to get the entire system running on your local machine using Docker.
 
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/erikbacsa/DistrubtedTaskMonitor.git
-   cd task-monitor
+### 1. Prerequisites
+Ensure you have [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed.
+
+### 2. Clone the Repository
+```bash
+git clone [https://github.com/erikbacsa/task-monitor.git](https://github.com/erikbacsa/task-monitor.git)
+cd task-monitor
+docker compose up --build
