@@ -24,5 +24,5 @@ The system follows a standard distributed pattern:
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/erikbacsa/task-monitor.git](https://github.com/erikbacsa/task-monitor.git)
+   git clone https://github.com/erikbacsa/task-monitor.git
    cd task-monitor
